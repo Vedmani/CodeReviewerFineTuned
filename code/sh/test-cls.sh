@@ -1,6 +1,6 @@
 # batch size 6 for 16 GB GPU
 
-#mnt_dir="/home/codereview"
+mnt_dir="/content"
 
 MASTER_HOST=localhost && echo MASTER_HOST: ${MASTER_HOST}
 MASTER_PORT=23333 && echo MASTER_PORT: ${MASTER_PORT}
