@@ -178,7 +178,7 @@ def main(args):
     random.shuffle(train_files)
     train_files = [os.path.join(train_file, file) for file in train_files]
     valid_files = [valid_file]
-    for epoch in range(1, args.train_epochs + 1):
+    for epoch in tqdm(range(1, args.train_epochs + 1)):
         # set seed for reproducible data split
         save_seed = args.seed
         args.seed += epoch
