@@ -1,6 +1,6 @@
 # batch size 12 for 16 GB GPU
 
-mnt_dir="/home/codereview"
+mnt_dir="/content"
 
 # You may change the following block for multiple gpu training
 MASTER_HOST=localhost && echo MASTER_HOST: ${MASTER_HOST}
@@ -23,10 +23,10 @@ bash test_nltk.sh
 
 python -m torch.distributed.launch --nproc_per_node ${PER_NODE_GPU} --node_rank=${RANK} --nnodes=${NODES} --master_addr=${MASTER_HOST} --master_port=${MASTER_PORT} ../run_finetune_cls.py  \
   --train_epochs 30 \
-  --model_name_or_path microsoft/codereviewer \
-  --output_dir ../../save/cls \
-  --train_filename ../../dataset/Diff_Quality_Estimation \
-  --dev_filename ../../dataset/Diff_Quality_Estimation/cls-valid.jsonl \
+  --model_name_or_path /content/model \
+  --output_dir /content/finetuned_model \
+  --train_filename /content/data/Diff_Quality_Estimation \
+  --dev_filename /content/data/Diff_Quality_Estimation/cls-valid.jsonl \
   --max_source_length 512 \
   --max_target_length 128 \
   --train_batch_size 12 \
