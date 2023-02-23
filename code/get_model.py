@@ -21,6 +21,13 @@ from sklearn.metrics import f1_score, accuracy_score
 
 MAX_SOURCE_LENGTH=512
 
+def pad_assert(tokenizer, source_ids):
+    source_ids = source_ids[:MAX_SOURCE_LENGTH - 2]
+    source_ids = [tokenizer.bos_id] + source_ids + [tokenizer.eos_id]
+    pad_len = MAX_SOURCE_LENGTH - len(source_ids)
+    source_ids += [tokenizer.pad_id] * pad_len
+    assert len(source_ids) == MAX_SOURCE_LENGTH, "Not equal length."
+    return source_ids
 
 def encode_diff(tokenizer, diff):
     difflines = diff.split("\n")[1:]        # remove start @@
