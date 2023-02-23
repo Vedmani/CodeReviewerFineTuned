@@ -98,14 +98,12 @@ def save_model(model, optimizer, scheduler, output_dir, config):
 
 
 def main(args):
-    dist.init_process_group(backend="nccl")
-    local_rank = dist.get_rank() % args.gpu_per_node
-    args.global_rank = local_rank + args.node_index * args.gpu_per_node
+    # dist.init_process_group(backend="nccl")
+    local_rank = 0
+    args.global_rank = 0
     args.local_rank = local_rank
     args.world_size = dist.get_world_size()
-    logger.warning("Process rank: %s, global rank: %s, world size: %s, bs: %s",
-                   args.local_rank, args.global_rank, \
-                   torch.distributed.get_world_size(), \
+    logger.warning("bs: %s",
                    args.train_batch_size)
     torch.cuda.set_device(local_rank)
 
