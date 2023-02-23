@@ -98,19 +98,17 @@ def save_model(model, optimizer, scheduler, output_dir, config):
 
 
 def main(args):
-    dist.init_process_group(backend="nccl")
-    local_rank = dist.get_rank() % args.gpu_per_node
-    args.global_rank = local_rank + args.node_index * args.gpu_per_node
+    # dist.init_process_group(backend="nccl")
+    local_rank = 0
+    args.global_rank = 0
     args.local_rank = local_rank
     args.world_size = dist.get_world_size()
-    logger.warning("Process rank: %s, global rank: %s, world size: %s, bs: %s",
-                   args.local_rank, args.global_rank, \
-                   torch.distributed.get_world_size(), \
+    logger.warning("bs: %s",
                    args.train_batch_size)
     torch.cuda.set_device(local_rank)
 
     # t0 = time.time()
-    set_dist(args)
+    # set_dist(args)
     set_seed(args)
     config, model, tokenizer = build_or_load_gen_model(args)
     # load last model
@@ -118,8 +116,9 @@ def main(args):
         model.load_state_dict(
             torch.load("{}/checkpoints-last/pytorch_model.bin".format(args.output_dir))
         )
-    model = DDP(model.cuda(), device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
-    pool = multiprocessing.Pool(args.cpu_count)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
+    # pool = multiprocessing.Pool(args.cpu_count) #not sure about this line
 
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ["bias", "LayerNorm.weight"]
@@ -178,7 +177,7 @@ def main(args):
     random.shuffle(train_files)
     train_files = [os.path.join(train_file, file) for file in train_files]
     valid_files = [valid_file]
-    for epoch in range(1, args.train_epochs + 1):
+    for epoch in tqdm(range(1, args.train_epochs + 1)):
         # set seed for reproducible data split
         save_seed = args.seed
         args.seed += epoch
