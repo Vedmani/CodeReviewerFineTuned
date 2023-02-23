@@ -20,14 +20,31 @@ from utils import CommentClsDataset, SimpleClsDataset
 from sklearn.metrics import f1_score, accuracy_score
 
 
-logging.basicConfig(
-    filename="log.txt",
+"""logging.basicConfig(
+    filename="example.log",
     format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
     datefmt="%m/%d/%Y %H:%M:%S",
     level=logging.DEBUG,
-)
+)"""
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
+# Create file handler
+fh = logging.FileHandler('example.log')
+fh.setLevel(logging.DEBUG)
+
+# Create console handler
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# Create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 def main(args):
     """local_rank = 0
