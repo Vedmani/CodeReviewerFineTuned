@@ -39,4 +39,3 @@ python -m torch.distributed.launch --nproc_per_node ${PER_NODE_GPU} --node_rank=
   --gpu_per_node=${PER_NODE_GPU} \
   --node_index=${RANK} \
   --seed 2233
-  --local_rank -1

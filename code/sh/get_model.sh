@@ -21,7 +21,7 @@ NCCL_DEBUG=INFO
 #   out_file: the path of the output file
 #   train_file_name: can be a directory contraining files named with "train*.jsonl"
 
-python /content/CodeReviewerFineTuned/code/get_model.py  \
+python /content/CodeReviewerFineTuned/code/model_pred.py  \
   --train_epochs 30 \
   --model_name_or_path /content/model \
   --output_dir /content/finetuned_model \

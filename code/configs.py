@@ -183,18 +183,21 @@ def add_args(parser):
         type=int,
         default=4,
         help="gpus per node",
+        required=False,
     )
     parser.add_argument(
         "--node_index",
         type=int,
         default=0,
         help="For distributed training: node_index",
+        required=False,
     )
     parser.add_argument(
         "--local_rank",
         type=int,
         default=-1,
         help="For distributed training: local_rank",
+        required=False,
     )
     parser.add_argument(
         "--seed", type=int, default=2233, help="random seed for initialization"
