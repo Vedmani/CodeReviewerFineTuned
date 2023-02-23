@@ -19,14 +19,12 @@ import torch.distributed as dist
 from utils import CommentClsDataset, SimpleClsDataset
 from sklearn.metrics import f1_score, accuracy_score
 
-
-if "__name__" == "__main__":
-    parser = argparse.ArgumentParser()
-    args = add_args(parser)
-    set_seed(args)
-    config, model, tokenizer = build_or_load_gen_model(args)
-    model_size = get_model_size(model)
-    logger = logging.getLogger("my_logger")
-    console_handler = logging.StreamHandler()
-    logger.addHandler(console_handler)
-    logger.info("Model size: %d", model_size)
+parser = argparse.ArgumentParser()
+args = add_args(parser)
+set_seed(args)
+config, model, tokenizer = build_or_load_gen_model(args)
+model_size = get_model_size(model)
+logger = logging.getLogger("my_logger")
+console_handler = logging.StreamHandler()
+logger.addHandler(console_handler)
+logger.info("Model size: %d", model_size)
