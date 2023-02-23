@@ -1,6 +1,6 @@
 bash test_nltk.sh
 
-python -m /content/CodeReviewerFineTuned/code/dummy_run_finetune_cls.py  \
+python /content/CodeReviewerFineTuned/code/dummy_run_finetune_cls.py  \
   --train_epochs 30 \
   --model_name_or_path /content/model \
   --output_dir /content/finetuned_model \
