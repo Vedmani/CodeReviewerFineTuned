@@ -25,8 +25,6 @@ if "__name__" == "__main__":
     args = add_args(parser)
     set_seed(args)
     config, model, tokenizer = build_or_load_gen_model(args)
-#logger to print model size
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-    logger.addHandler(logging.StreamHandler())
-    logger.info("Model size: %d", get_model_size(model))
+    model_size = get_model_size(model)
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Model size: %d", model_size)
