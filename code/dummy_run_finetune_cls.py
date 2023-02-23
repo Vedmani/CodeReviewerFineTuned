@@ -54,6 +54,68 @@ def main(args):
     # device = "cuda" if torch.cuda.is_availablee() else "cpu"
     set_seed(args)
     config, model, tokenizer = build_or_load_gen_model(args)
+    """if os.path.exists("{}/checkpoints-last/pytorch_model.bin".format(args.output_dir)):
+        model.load_state_dict(
+            torch.load("{}/checkpoints-last/pytorch_model.bin".format(args.output_dir))
+        )"""
+    no_decay = ["bias", "LayerNorm.weight"]
+    optimizer_grouped_parameters = [
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if not any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": args.weight_decay,
+        },
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": 0.0,
+        },
+    ]
+    optimizer = AdamW(
+        optimizer_grouped_parameters, lr=args.learning_rate, eps=args.adam_epsilon
+    )
+    print("Optimizer loaded.")
+    logger.debug("Optimizer loaded")
+    args.warmup_steps = int(args.train_steps * 0.1)
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=args.warmup_steps,
+        num_training_steps=args.train_steps,
+    )
+
+    if os.path.exists("{}/checkpoints-last/optimizer.pt".format(args.output_dir)):
+        optimizer.load_state_dict(
+            torch.load(
+                "{}/checkpoints-last/optimizer.pt".format(args.output_dir),
+                map_location="cpu",
+            )
+        )
+        scheduler.load_state_dict(
+            torch.load(
+                "{}/checkpoints-last/scheduler.pt".format(args.output_dir),
+                map_location="cpu",
+            )
+        )
+    global_step = 0
+    save_steps = args.save_steps
+    train_file = args.train_filename
+    valid_file = args.dev_filename
+    if os.path.isdir(train_file):
+        train_files = [file for file in os.listdir(train_file) if
+                       file.startswith("cls-train-chunk") and file.endswith(".jsonl")]
+    else:
+        train_files = [train_file]
+    logger.warning("Train files: %s", train_files)
+    random.seed(args.seed)
+    random.shuffle(train_files)
+    train_files = [os.path.join(train_file, file) for file in train_files]
+    valid_files = [valid_file]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
