@@ -1,1 +1,1 @@
-python temp.py
+python /content/CodeReviewerFineTuned/code/temp.py
