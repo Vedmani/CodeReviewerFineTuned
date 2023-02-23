@@ -116,8 +116,9 @@ def main(args):
         model.load_state_dict(
             torch.load("{}/checkpoints-last/pytorch_model.bin".format(args.output_dir))
         )
-    model = DDP(model.cuda(), device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
-    pool = multiprocessing.Pool(args.cpu_count)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
+    pool = multiprocessing.Pool(args.cpu_count) #not sure about this line
 
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ["bias", "LayerNorm.weight"]

@@ -11,7 +11,7 @@ WORLD_SIZE=1 && echo WORLD_SIZE: ${WORLD_SIZE}
 NODES=1 && echo NODES: ${NODES}
 NCCL_DEBUG=INFO
 
-bash test_nltk.sh
+#bash test_nltk.sh
 
 
 # Change the arguments as required:
