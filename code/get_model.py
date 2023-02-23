@@ -19,6 +19,9 @@ import torch.distributed as dist
 from utils import CommentClsDataset, SimpleClsDataset
 from sklearn.metrics import f1_score, accuracy_score
 
+MAX_SOURCE_LENGTH=512
+
+
 def encode_diff(tokenizer, diff):
     difflines = diff.split("\n")[1:]        # remove start @@
     difflines = [line for line in difflines if len(line.strip()) > 0]
