@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -123,7 +123,7 @@ def sndrcv(pks, pkt, timeout = None, inter = 0, verbose=None, chainCC=0, retry=0\n                                 if remaintime <= 0:\n                                     break\n                             r = None\n-                            if arch.FREEBSD or arch.DARWIN:\n+                            if not (pks.__class__.__name__ == 'StreamSocket') and (arch.FREEBSD or arch.DARWIN):\n                                 inp, out, err = select(inmask,[],[], 0.05)\n                                 if len(inp) == 0 or pks in inp:\n                                     r = pks.nonblock_recv()"""
+code_diff = """@@ -304,10 +304,18 @@ def define_scanner_parser(parent):\n         title=\'action\',\n         dest=\'action\')\n \n-    action_subparser.add_parser(\n+    run_scanner_parser = action_subparser.add_parser(\n         \'run\',\n         help=\'Run the scanner\')\n \n+    run_scanner_parser.add_argument(\n+        \'--scanner\',\n+        choices=[\'external_access_scanner\'],\n+        help=\'Run a specific scanner, \'\n+             \'currently only applicable for \'\n+             \'the external project access scanner\'\n+    )\n+\n \n def define_notifier_parser(parent):\n"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
