@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -304,10 +304,18 @@ def define_scanner_parser(parent):\n         title=\'action\',\n         dest=\'action\')\n \n-    action_subparser.add_parser(\n+    run_scanner_parser = action_subparser.add_parser(\n         \'run\',\n         help=\'Run the scanner\')\n \n+    run_scanner_parser.add_argument(\n+        \'--scanner\',\n+        choices=[\'external_access_scanner\'],\n+        help=\'Run a specific scanner, \'\n+             \'currently only applicable for \'\n+             \'the external project access scanner\'\n+    )\n+\n \n def define_notifier_parser(parent):\n"""
+code_diff = """@@ -306,7 +306,7 @@ def extract_record_set(records, filters, sorting,\n     paginated = {}\n     for rule in pagination_rules or []:\n         values = list(apply_filters(filtered, rule))\n-        paginated.update(dict(((x[id_field], x) for x in values)))\n+        paginated.update(dict(((x.get(id_field), x) for x in values)))\n \n     if paginated:\n         paginated = paginated.values()"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
