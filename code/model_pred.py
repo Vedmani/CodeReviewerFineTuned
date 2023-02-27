@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@@ -1004,8 +1004,9 @@ static void parseRecord (tokenInfo *const token)\n \t */\n \tif (!isType (token, TOKEN_OPEN_PAREN))\n \t\treadToken (token);\n+\tif (!isType (token, TOKEN_OPEN_PAREN))\n+\t\treturn;\n \n-\tAssert (isType (token, TOKEN_OPEN_PAREN));\n \tdo\n \t{\n \t\tif (isType (token, TOKEN_COMMA) ||"""
+code_diff = """@@ -1 +1,2 @@\n import torch\n +import torch.nn as nn"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
