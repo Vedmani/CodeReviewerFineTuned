@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -18,8 +18,11 @@ from mitmproxy import io\n from mitmproxy import log\n from mitmproxy import version\n from mitmproxy import optmanager\n+from mitmproxy import options\n import mitmproxy.tools.web.master # noqa\n \n+CONFIG_PATH = os.path.join(options.CA_DIR, \'config.yaml\')\n+\n \n def flow_to_json(flow: mitmproxy.flow.Flow) -> dict:\n"""
+code_diff = """@@@ -1004,8 +1004,9 @@ static void parseRecord (tokenInfo *const token)\n \t */\n \tif (!isType (token, TOKEN_OPEN_PAREN))\n \t\treadToken (token);\n+\tif (!isType (token, TOKEN_OPEN_PAREN))\n+\t\treturn;\n \n-\tAssert (isType (token, TOKEN_OPEN_PAREN));\n \tdo\n \t{\n \t\tif (isType (token, TOKEN_COMMA) ||"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
