@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -1 +1,2 @@\n import torch\n +import torch.nn as nn"""
+code_diff = """@@ -123,7 +123,7 @@ def sndrcv(pks, pkt, timeout = None, inter = 0, verbose=None, chainCC=0, retry=0\n                                 if remaintime <= 0:\n                                     break\n                             r = None\n-                            if arch.FREEBSD or arch.DARWIN:\n+                            if not (pks.__class__.__name__ == 'StreamSocket') and (arch.FREEBSD or arch.DARWIN):\n                                 inp, out, err = select(inmask,[],[], 0.05)\n                                 if len(inp) == 0 or pks in inp:\n                                     r = pks.nonblock_recv()"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
