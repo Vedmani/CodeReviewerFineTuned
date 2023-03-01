@@ -57,6 +57,7 @@ preds = model.generate(inputs,
                         )
 preds = list(preds.cpu().numpy())
 pred_nls = [tokenizer.decode(id[2:], skip_special_tokens=True, clean_up_tokenization_spaces=False) for id in preds]
+print(code_diff)
 print(pred_nls[0])
 print(pred_nls)
     
