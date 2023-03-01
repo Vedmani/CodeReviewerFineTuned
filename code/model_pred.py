@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -19,6 +19,11 @@\n \n package org.apache.iceberg.mr.hive.serde.objectinspector;\n \n+/**\n+ * Interface for converting the Hive primitive objects for to the objects which could be added to an Iceberg Record.\n+ * If the IcebergObjectInspector does not implement this then the default Hive primitive objects will be used without\n+ * conversion.\n+ */\n public interface WriteObjectInspector {\n   Object convert(Object value);\n"""
+code_diff = """@@ -3333,7 +3333,14 @@ instr_is_reg_spill_or_restore_ex(void *drcontext, instr_t *instr, bool DR_only,\n         reg = &myreg;\n     if (instr_check_tls_spill_restore(instr, spill, reg, &check_disp)) {\n         int offs = reg_spill_tls_offs(*reg);\n-        if (!DR_only || (offs != -1 && check_disp == os_tls_offset((ushort)offs))) {\n+        if (!DR_only ||\n+            (offs != -1 &&\n+             /* Mangling may choose to spill registers to a not natural tls offset,\n+              * e.g. rip-rel mangling will, if rax is used by the instruction. We\n+              * allow for this here and still recognize the DR spill.\n+              */\n+             (instr_is_our_mangling(instr) ||\n+              check_disp == os_tls_offset((ushort)offs)))) {\n             if (tls != NULL)\n                 *tls = true;\n             if (offs_out != NULL)"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
@@ -70,7 +70,7 @@ preds = model.generate(inputs,
                         use_cache=True,
                         num_beams=5,
                         early_stopping=True,
-                        max_length=150,
+                        max_length=100,
                         num_return_sequences=5
                         )
 preds = list(preds.cpu().numpy())
