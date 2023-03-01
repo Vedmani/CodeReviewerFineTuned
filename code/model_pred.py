@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -1 +1,2 @@\n import pandas as pd\n +df = pandas.DataFrame(path)"""
+code_diff = """@@ -15,7 +15,7 @@ public class ManipulationTest extends BasicJBehaveTest {\n \n     @Override\n     public InjectableStepsFactory stepsFactory() {\n-        Map<String, Object> state = new HashMap<String, Object>();\n+        Map<String, Object> state = new HashMap<>();\n \n         return new InstanceStepsFactory(configuration(),\n                 new SharedSteps(state)"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
