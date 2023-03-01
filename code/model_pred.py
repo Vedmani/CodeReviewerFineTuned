@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -15,7 +15,7 @@ public class ManipulationTest extends BasicJBehaveTest {\n \n     @Override\n     public InjectableStepsFactory stepsFactory() {\n-        Map<String, Object> state = new HashMap<String, Object>();\n+        Map<String, Object> state = new HashMap<>();\n \n         return new InstanceStepsFactory(configuration(),\n                 new SharedSteps(state)"""
+code_diff = """@@ -1,5 +1,7 @@\n from .resnet import ResNet, make_res_layer\n from .resnext import ResNeXt\n from .ssd_vgg import SSDVGG\n+from .hrnet import HRNet\n \n-__all__ = ['ResNet', 'make_res_layer', 'ResNeXt', 'SSDVGG']\n+__all__ = ['ResNet', 'make_res_layer', 'ResNeXt', 'SSDVGG',\n+           'HRNet']"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
