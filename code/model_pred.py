@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -3333,7 +3333,14 @@ instr_is_reg_spill_or_restore_ex(void *drcontext, instr_t *instr, bool DR_only,\n         reg = &myreg;\n     if (instr_check_tls_spill_restore(instr, spill, reg, &check_disp)) {\n         int offs = reg_spill_tls_offs(*reg);\n-        if (!DR_only || (offs != -1 && check_disp == os_tls_offset((ushort)offs))) {\n+        if (!DR_only ||\n+            (offs != -1 &&\n+             /* Mangling may choose to spill registers to a not natural tls offset,\n+              * e.g. rip-rel mangling will, if rax is used by the instruction. We\n+              * allow for this here and still recognize the DR spill.\n+              */\n+             (instr_is_our_mangling(instr) ||\n+              check_disp == os_tls_offset((ushort)offs)))) {\n             if (tls != NULL)\n                 *tls = true;\n             if (offs_out != NULL)"""
+code_diff = """@@ -1 +1,2 @@\n import pandas as pd\n +df = pandas.DataFrame(path)"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
