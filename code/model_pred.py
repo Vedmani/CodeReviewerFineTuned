@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """+printf (hello world)"""
+code_diff = """public class MockExecutorLoader implements ExecutorLoader { public void unassignExecutor(int executionId) throws ExecutorManagerException { executionExecutorMapping.remove(executionId); } + + @Override + public List<ExecutableFlow> fetchRecentlyFinishedFlows(long lifeTimeMs) + throws ExecutorManagerException { + return null; + } }"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
