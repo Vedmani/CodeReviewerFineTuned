@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -231,4 +231,8 @@ def setup_app(app):\n         )\n         return rv\n \n+    @app.template_test('list')\n+    def _is_list(value):\n+        return isinstance(value, list)\n+\n     return app"""
+code_diff = """@@ -1 +1,2 @@\n import torch\n +import torch.nn as nn"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
