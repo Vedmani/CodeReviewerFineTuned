@@ -40,12 +40,11 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 args.model_name_or_path = "microsoft/codereviewer"
 config, model, tokenizer = build_or_load_gen_model(args)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+model.to("cuda")
 model.eval()
 code_diff = """@@ -18,8 +18,11 @@ from mitmproxy import io\n from mitmproxy import log\n from mitmproxy import version\n from mitmproxy import optmanager\n+from mitmproxy import options\n import mitmproxy.tools.web.master # noqa\n \n+CONFIG_PATH = os.path.join(options.CA_DIR, \'config.yaml\')\n+\n \n def flow_to_json(flow: mitmproxy.flow.Flow) -> dict:\n"""
 
-inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to(device)
+inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
                         attention_mask=inputs_mask,
@@ -53,11 +52,9 @@ preds = model.generate(inputs,
                         num_beams=5,
                         early_stopping=True,
                         max_length=100,
-                        num_return_sequences=4
+                        num_return_sequences=2
                         )
 preds = list(preds.cpu().numpy())
 pred_nls = [tokenizer.decode(id[2:], skip_special_tokens=True, clean_up_tokenization_spaces=False) for id in preds]
-print(code_diff)
 print(pred_nls[0])
-print(pred_nls)
     

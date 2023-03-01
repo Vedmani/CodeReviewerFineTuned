@@ -71,8 +71,10 @@ preds = model.generate(inputs,
                         num_beams=5,
                         early_stopping=True,
                         max_length=100,
-                        num_return_sequences=2
+                        num_return_sequences=5
                         )
 preds = list(preds.cpu().numpy())
 pred_nls = [tokenizer.decode(id[2:], skip_special_tokens=True, clean_up_tokenization_spaces=False) for id in preds]
+print(code_diff)
 print(pred_nls[0])
+print(pred_nls)
