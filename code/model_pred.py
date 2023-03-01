@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -52,9 +52,8 @@ class DataIterator:\n \n     @classmethod\n     def from_params(cls, params: Params):\n-        from allennlp.experiments.registry import Registry\n         # TODO(Mark): The adaptive iterator will need a bit of work here,\n         # to retrieve the scaling function etc.\n \n-        iterator_type = params.pop_choice("type", Registry.list_data_iterators())\n-        return Registry.get_data_iterator(iterator_type)(**params.as_dict())  # type: ignore\n+        iterator_type = params.pop_choice("type", cls.list_available())\n+        return cls.by_name(iterator_type)(**params.as_dict())  # type: ignore\n"""
+code_diff = """+printf (hello world)"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
