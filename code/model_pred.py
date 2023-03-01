@@ -70,7 +70,7 @@ preds = model.generate(inputs,
                         use_cache=True,
                         num_beams=5,
                         early_stopping=True,
-                        max_length=100,
+                        max_length=150,
                         num_return_sequences=5
                         )
 preds = list(preds.cpu().numpy())
