@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """+import java.util.*;\n import org.apache.commons.lang3.StringUtils;\n import org.apache.kylin.common.util.DBUtils;"""
+code_diff = """@@ -216,6 +216,7 @@ bool GenerateRustModuleRootFile(const Parser &parser,\n       for (auto it = sub_modules.begin(); it != sub_modules.end(); it++) {\n         code += "pub mod " + it->first + " {";\n         code.IncrementIdentLevel();\n+        code += "#![deny(unsafe_op_in_unsafe_fn)]";\n         code += "use super::*;";\n         it->second.GenerateImports(code);\n         code.DecrementIdentLevel();"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
