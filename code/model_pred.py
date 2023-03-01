@@ -62,7 +62,7 @@ model.to(device)
 print(model_size)
 print("Model device:", model.device)
 model.eval()
-code_diff = """@@ -18,8 +18,11 @@ from mitmproxy import io\n from mitmproxy import log\n from mitmproxy import version\n from mitmproxy import optmanager\n+from mitmproxy import options\n import mitmproxy.tools.web.master # noqa\n \n+CONFIG_PATH = os.path.join(options.CA_DIR, \'config.yaml\')\n+\n \n def flow_to_json(flow: mitmproxy.flow.Flow) -> dict:\n """
+code_diff = """@@ -19,6 +19,11 @@\n \n package org.apache.iceberg.mr.hive.serde.objectinspector;\n \n+/**\n+ * Interface for converting the Hive primitive objects for to the objects which could be added to an Iceberg Record.\n+ * If the IcebergObjectInspector does not implement this then the default Hive primitive objects will be used without\n+ * conversion.\n+ */\n public interface WriteObjectInspector {\n   Object convert(Object value);\n"""
 inputs = torch.tensor([encode_diff(tokenizer, code_diff)], dtype=torch.long).to("cuda")
 inputs_mask = inputs.ne(tokenizer.pad_id)
 preds = model.generate(inputs,
