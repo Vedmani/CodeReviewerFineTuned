@@ -8,7 +8,7 @@ python /content/CodeReviewerFineTuned/code/dummy_run_finetune_cls.py  \
   --dev_filename /content/data/Diff_Quality_Estimation/cls-valid.jsonl \
   --max_source_length 512 \
   --max_target_length 128 \
-  --train_batch_size 8 \
+  --train_batch_size 5 \
   --learning_rate 3e-4 \
   --gradient_accumulation_steps 3 \
   --mask_rate 0.15 \
